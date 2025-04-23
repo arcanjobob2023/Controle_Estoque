@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Controle de Estoque</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Sistema de Controle de Estoque - SGOP</h1>
+    </header>
+
+    <nav>
+      <a href="#" class="active" onclick="showPage('estoque-geral', this)">Estoque Geral</a>
+      <a href="#" onclick="showPage('estoque-id', this)">Estoque por ID</a>
+      <a href="#" onclick="showPage('estoque-ns', this)">Estoque por NS</a>
+      <a href="#" onclick="showPage('cadastro-id', this)">Cadastro de ID</a>
+      <a href="#" onclick="showPage('cadastro-ns', this)">Cadastro de NS</a>
+      <a href="#" onclick="showPage('cadastro-orcamento', this)">Cadastro de Orçamento</a>
+      <a href="#" onclick="showPage('cadastro-entrada-estoque', this)">Entrada de Estoque</a>
+      <a href="#" onclick="showPage('cadastro-item', this)">Cadastro de Item</a>
+      <a href="#" onclick="showPage('transferencia-material', this)">Transferência de Material</a>
+    </nav>
+        
+        <!-- Página de Estoque Geral -->
+        <div id="estoque-geral" class="page active-page">
+            <div class="card">
+                <h2>Estoque Geral</h2>
+                <div class="summary-info" id="summary-estoque-geral">
+                    <div class="summary-card">
+                        <h3>Total de Itens</h3>
+                        <p id="total-itens">-</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>IDs Ativos</h3>
+                        <p id="total-ids">-</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>NSs Ativas</h3>
+                        <p id="total-ns">-</p>
+                    </div>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="busca-estoque-geral" placeholder="Buscar item...">
+                    <button onclick="filtrarEstoqueGeral()">Buscar</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NS</th>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Unidade</th>
+                            <th>Quantidade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-estoque-geral">
+                        <tr>
+                            <td colspan="7" class="text-center">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Página de Estoque por ID -->
+        <div id="estoque-id" class="page">
+            <div class="card">
+                <h2>Estoque por ID</h2>
+                <div class="form-group">
+                    <label for="select-id">Selecionar ID:</label>
+                    <select id="select-id" data-tipo="ids">
+                        <option value="">Selecione um ID</option>
+                    </select>
+                </div>
+                
+                <div class="summary-info">
+                    <div class="summary-card">
+                        <h3>Total de Itens</h3>
+                        <p id="total-itens-id">-</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>NSs Associadas</h3>
+                        <p id="total-ns-id">-</p>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Unidade</th>
+                            <th>Quantidade Total</th>
+                            <th>NSs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-estoque-id">
+                        <tr>
+                            <td colspan="5" class="text-center">Selecione um ID</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Página de Estoque por NS -->
+        <div id="estoque-ns" class="page">
+            <div class="card">
+                <h2>Estoque por NS</h2>
+                <div class="form-group">
+                    <label for="select-ns">Selecionar NS:</label>
+                    <select id="select-ns" data-tipo="ns">
+                        <option value="">Selecione uma NS</option>
+                    </select>
+                </div>
+                
+                <div id="ns-info" class="info-block">
+                    <p><strong>ID Associado:</strong> <span id="id-associado">-</span></p>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Unidade</th>
+                            <th>Quantidade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-estoque-ns">
+                        <tr>
+                            <td colspan="5" class="text-center">Selecione uma NS</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Página de Cadastro de ID -->
+        <div id="cadastro-id" class="page">
+            <div class="card">
+                <h2>Cadastro de ID</h2>
+                <form id="form-cadastro-id">
+                    <div class="form-group">
+                        <label for="codigo-id">Código da ID:</label>
+                        <input type="text" id="codigo-id" required placeholder="Ex: ID001">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nome-projeto">Nome do Projeto:</label>
+                        <input type="text" id="nome-projeto" required placeholder="Nome do projeto associado">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cliente-id">Cliente:</label>
+                        <input type="text" id="cliente-id" required placeholder="Nome do cliente">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavel-id">Responsável:</label>
+                        <input type="text" id="responsavel-id" required placeholder="Nome do responsável pelo projeto">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="data-inicio">Data de Início:</label>
+                        <input type="date" id="data-inicio" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="data-fim">Data Prevista de Conclusão:</label>
+                        <input type="date" id="data-fim">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacoes-id">Observações:</label>
+                        <textarea id="observacoes-id" rows="3" placeholder="Observações adicionais sobre o projeto"></textarea>
+                    </div>
+                    
+                    <button type="submit">Cadastrar ID</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>IDs Cadastrados</h2>
+                <div class="search-box">
+                    <input type="text" id="busca-ids" placeholder="Buscar ID...">
+                    <button onclick="filtrarIDs()">Buscar</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome do Projeto</th>
+                            <th>Cliente</th>
+                            <th>Responsável</th>
+                            <th>Data de Início</th>
+                            <th>Data de Conclusão</th>
+                            <th>NSs Associadas</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-ids">
+                        <tr>
+                            <td colspan="8" class="text-center">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Página de Cadastro de NS -->
+        <div id="cadastro-ns" class="page">
+            <div class="card">
+                <h2>Cadastro de NS</h2>
+                <form id="form-cadastro-ns">
+                    <div class="form-group">
+                        <label for="codigo-ns">Código da NS:</label>
+                        <input type="text" id="codigo-ns" required placeholder="Ex: NS0001">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id-ns">ID Associado:</label>
+                        <select id="id-ns" data-tipo="ids" required>
+                            <option value="">Selecione um ID</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao-ns">Descrição:</label>
+                        <input type="text" id="descricao-ns" required placeholder="Descrição da nota de serviço">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="data-criacao-ns">Data de Criação:</label>
+                        <input type="date" id="data-criacao-ns" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status-ns">Status:</label>
+                        <select id="status-ns" required>
+                            <option value="Aberta">Aberta</option>
+                            <option value="Em Andamento">Em Andamento</option>
+                            <option value="Concluída">Concluída</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacoes-ns">Observações:</label>
+                        <textarea id="observacoes-ns" rows="3" placeholder="Observações adicionais sobre a nota de serviço"></textarea>
+                    </div>
+                    
+                    <button type="submit">Cadastrar NS</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>NSs Cadastradas</h2>
+                <div class="search-box">
+                    <input type="text" id="busca-ns" placeholder="Buscar NS...">
+                    <button onclick="filtrarNSs()">Buscar</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>ID</th>
+                            <th>Projeto</th>
+                            <th>Descrição</th>
+                            <th>Data de Criação</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-ns">
+                        <tr>
+                            <td colspan="7" class="text-center">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Página de Cadastro de Orçamento -->
+        <div id="cadastro-orcamento" class="page">
+            <div class="card">
+                <h2>Cadastro de Orçamento</h2>
+                <form id="form-cadastro-orcamento">
+                    <div class="form-group">
+                        <label for="ns-orcamento">NS do Projeto:</label>
+                        <select id="ns-orcamento" data-tipo="ns" required>
+                            <option value="">Selecione uma NS</option>
+                        </select>
+                    </div>
+                    
+                    <div id="info-id-orcamento" class="info-block">
+                        <p><strong>ID Associado:</strong> <span id="id-orcamento">-</span></p>
+                        <p><strong>Projeto:</strong> <span id="projeto-orcamento">-</span></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="codigo-item-orcamento">Código do Item:</label>
+                        <input type="text" id="codigo-item-orcamento" placeholder="Digite o código do item e pressione TAB">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao-item-orcamento">Descrição:</label>
+                        <input type="text" id="descricao-item-orcamento" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unidade-item-orcamento">Unidade:</label>
+                        <input type="text" id="unidade-item-orcamento" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantidade-orcamento">Quantidade:</label>
+                        <input type="number" id="quantidade-orcamento" min="0.01" step="0.01" required>
+                    </div>
+                    
+                    <button type="submit">Adicionar Item ao Orçamento</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>Itens do Orçamento</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Unidade</th>
+                            <th>Quantidade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-orcamento">
+                        <tr>
+                            <td colspan="5" class="text-center">Selecione uma NS</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Página de Cadastro de Item -->
+        <div id="cadastro-item" class="page">
+            <div class="card">
+                <h2>Cadastro de Item</h2>
+                <form id="form-cadastro-item">
+                    <div class="form-group">
+                        <label for="codigo-item">Código:</label>
+                        <input type="text" id="codigo-item" required placeholder="Ex: MAT001">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao-item">Descrição:</label>
+                        <textarea id="descricao-item" rows="3" required placeholder="Descrição detalhada do item"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unidade-item">Unidade:</label>
+                        <select id="unidade-item" required>
+                            <option value="">Selecione</option>
+                            <option value="un">un (unidade)</option>
+                            <option value="pç">pç (peça)</option>
+                            <option value="kg">kg (quilograma)</option>
+                            <option value="m">m (metro)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit">Cadastrar Item</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>Itens Cadastrados</h2>
+                <div class="search-box">
+                    <input type="text" id="busca-itens" placeholder="Buscar item...">
+                    <button onclick="filtrarItens()">Buscar</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Unidade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-itens">
+                        <tr>
+                            <td colspan="4" class="text-center">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Página de Cadastro de Entrada no Estoque -->
+        <div id="cadastro-entrada-estoque" class="page">
+            <div class="card">
+                <h2>Cadastro de Entrada no Estoque</h2>
+                <form id="form-cadastro-entrada-estoque">
+                    <div class="form-group">
+                        <label for="ns-entrada-estoque">NS do Projeto:</label>
+                        <select id="ns-entrada-estoque" data-tipo="ns" required>
+                            <option value="">Selecione uma NS</option>
+                        </select>
+                    </div>
+                    
+                    <div id="info-id-entrada-estoque" class="info-block">
+                        <p><strong>ID Associado:</strong> <span id="id-entrada-estoque">-</span></p>
+                        <p><strong>Projeto:</strong> <span id="projeto-entrada-estoque">-</span></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="codigo-item-entrada-estoque">Código do Item:</label>
+                        <input type="text" id="codigo-item-entrada-estoque" placeholder="Digite o código do item e pressione TAB">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao-item-entrada-estoque">Descrição:</label>
+                        <input type="text" id="descricao-item-entrada-estoque" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unidade-item-entrada-estoque">Unidade:</label>
+                        <input type="text" id="unidade-item-entrada-estoque" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantidade-entrada-estoque">Quantidade Recebida:</label>
+                        <input type="number" id="quantidade-entrada-estoque" min="0.01" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavel-entrada-estoque">Responsável:</label>
+                        <input type="text" id="responsavel-entrada-estoque" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacao-entrada-estoque">Observação:</label>
+                        <textarea id="observacao-entrada-estoque" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit">Registrar Entrada no Estoque</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>Entradas no Estoque por NS</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Unidade</th>
+                            <th>Quantidade</th>
+                            <th>Responsável</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-entradas-estoque">
+                        <tr>
+                            <td colspan="6" class="text-center">Selecione uma NS</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Nova Página de Transferência de Material entre NS -->
+        <div id="transferencia-material" class="page">
+            <div class="card">
+                <h2>Transferência de Material entre NS</h2>
+                <form id="form-transferencia-material">
+                    <div class="form-group">
+                        <label for="ns-origem">NS de Origem:</label>
+                        <select id="ns-origem" data-tipo="ns" required>
+                            <option value="">Selecione a NS de origem</option>
+                        </select>
+                    </div>
+                    
+                    <div id="info-id-origem" class="info-block">
+                        <p><strong>ID Associado:</strong> <span id="id-origem">-</span></p>
+                        <p><strong>Projeto:</strong> <span id="projeto-origem">-</span></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ns-destino">NS de Destino:</label>
+                        <select id="ns-destino" data-tipo="ns" required>
+                            <option value="">Selecione a NS de destino</option>
+                        </select>
+                    </div>
+                    
+                    <div id="info-id-destino" class="info-block">
+                        <p><strong>ID Associado:</strong> <span id="id-destino">-</span></p>
+                        <p><strong>Projeto:</strong> <span id="projeto-destino">-</span></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="codigo-item-transferencia">Código do Item:</label>
+                        <input type="text" id="codigo-item-transferencia" placeholder="Digite o código do item e pressione TAB">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao-item-transferencia">Descrição:</label>
+                        <input type="text" id="descricao-item-transferencia" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unidade-item-transferencia">Unidade:</label>
+                        <input type="text" id="unidade-item-transferencia" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantidade-disponivel">Quantidade Disponível:</label>
+                        <input type="text" id="quantidade-disponivel" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantidade-transferencia">Quantidade a Transferir:</label>
+                        <input type="number" id="quantidade-transferencia" min="0.01" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavel-transferencia">Responsável:</label>
+                        <input type="text" id="responsavel-transferencia" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacao-transferencia">Observação:</label>
+                        <textarea id="observacao-transferencia" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit">Registrar Transferência</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>Histórico de Transferências</h2>
+                <div class="form-group">
+                    <label for="filtro-transferencias">Filtrar por NS:</label>
+                    <select id="filtro-transferencias" data-tipo="ns">
+                        <option value="">Todas as transferências</option>
+                    </select>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>NS Origem</th>
+                            <th>NS Destino</th>
+                            <th>Código</th>
+                            <th>Descrição</th>
+                            <th>Quantidade</th>
+                            <th>Responsável</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-transferencias">
+                        <tr>
+                            <td colspan="9" class="text-center">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Modal para Adicionar ao Estoque -->
+        <div id="modal-adicionar-estoque" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="fecharModal('modal-adicionar-estoque')">&times;</span>
+                <h2>Adicionar ao Estoque</h2>
+                <form id="form-adicionar-estoque">
+                    <input type="hidden" id="ns-adicionar">
+                    <input type="hidden" id="item-adicionar">
+                    
+                    <div class="form-group">
+                        <label>NS:</label>
+                        <p id="ns-adicionar-texto"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Item:</label>
+                        <p id="item-adicionar-texto"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantidade-adicionar">Quantidade:</label>
+                        <input type="number" id="quantidade-adicionar" min="0.01" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavel-adicionar">Responsável:</label>
+                        <input type="text" id="responsavel-adicionar" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacao-adicionar">Observação:</label>
+                        <textarea id="observacao-adicionar" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit">Adicionar</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal para Retirar do Estoque -->
+        <div id="modal-retirar-estoque" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="fecharModal('modal-retirar-estoque')">&times;</span>
+                <h2>Retirar do Estoque</h2>
+                <form id="form-retirar-estoque">
+                    <input type="hidden" id="ns-retirar">
+                    <input type="hidden" id="item-retirar">
+                    
+                    <div class="form-group">
+                        <label>NS:</label>
+                        <p id="ns-retirar-texto"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Item:</label>
+                        <p id="item-retirar-texto"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantidade-retirar">Quantidade:</label>
+                        <input type="number" id="quantidade-retirar" min="0.01" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavel-retirar">Responsável:</label>
+                        <input type="text" id="responsavel-retirar" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacao-retirar">Observação:</label>
+                        <textarea id="observacao-retirar" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit">Retirar</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal para Devolução de Material -->
+        <div id="modal-devolucao" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="fecharModal('modal-devolucao')">&times;</span>
+                <h2>Devolução de Material</h2>
+                <form id="form-devolucao">
+                    <input type="hidden" id="transferencia-id">
+                    
+                    <div class="form-group">
+                        <label>NS de Origem:</label>
+                        <p id="devolucao-ns-origem"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>NS de Destino:</label>
+                        <p id="devolucao-ns-destino"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Item:</label>
+                        <p id="devolucao-item-texto"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Quantidade Transferida:</label>
+                        <p id="devolucao-quantidade-original"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Quantidade Já Devolvida:</label>
+                        <p id="devolucao-quantidade-devolvida"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quantidade-devolucao">Quantidade a Devolver:</label>
+                        <input type="number" id="quantidade-devolucao" min="0.01" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavel-devolucao">Responsável:</label>
+                        <input type="text" id="responsavel-devolucao" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacao-devolucao">Observação:</label>
+                        <textarea id="observacao-devolucao" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit">Registrar Devolução</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+ <!-- Scripts no fim para carregamento mais rápido -->
+ <script src="js/api.js"></script>
+ <script src="js/main.js"></script>
+</div>
+</body>
+</html>
