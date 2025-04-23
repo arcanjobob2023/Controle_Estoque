@@ -1,9 +1,9 @@
 <?php
 // Configurações de conexão com o banco de dados
-$servername = "192.168.7.208"; 
-$username = "cracha"; 
-$password = "Encel1963!@#"; 
-$database = "aumoxarifadosgop";
+$servername = "seuserver"; 
+$username = "seuuser"; 
+$password = "suasenha"; 
+$database = "suabase";
 
 // Criar conexão
 $conn = new mysqli($servername, $username, $password, $database);
